@@ -12,6 +12,13 @@ pipeline {
                 sh 'docker-compose build'               
             }    
         }
+
+        stage('Pruebas del proyecto') {
+            steps{
+                echo 'Probando...'
+            }
+        }
+
         stage('Despliegue del proyecto') {
             steps{
                 echo 'Desplegando...'
