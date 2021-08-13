@@ -13,6 +13,22 @@ pipeline {
             }    
         }
 
+        stage('Guardar Imagn GitLab'){
+            steps{
+                script{
+                    withDockerRegistry([url:'http://10.250.11.3:5050',credentialsId:'tokenDespliege']) {
+                        sh "docker tag hello-final:latest 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
+                        sh "docker push 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
+                        
+                        sh "docker image rm -f 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
+                        sh "docker image rm -f hello-final:latest"
+                    } 
+                }
+
+            }
+                                                                    
+        }
+
         stage('Pruebas del proyecto') {
             steps{
                 echo 'Probando...'
