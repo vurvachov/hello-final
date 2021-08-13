@@ -16,7 +16,7 @@ pipeline {
         stage('Guardar Imagn GitLab'){
             steps{
                 script{
-                    withDockerRegistry([url:'http://10.250.11.3:5050',credentialsId:'tokenDespliege']) {
+                    withDockerRegistry([url:'http://10.250.11.3:5050',credentialsId:'deployToken']) {
                         sh "docker tag hello-final:latest 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
                         sh "docker push 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
                         
