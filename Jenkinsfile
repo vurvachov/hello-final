@@ -1,8 +1,13 @@
 #!/usr/bin/env groovy
 pipeline {
+
     agent any
     options {
         ansiColor('xterm')
+    }
+
+    tools {
+        jdk 'jdk11'
     }
 
     stages {
