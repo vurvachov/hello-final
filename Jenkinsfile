@@ -6,10 +6,6 @@ pipeline {
         ansiColor('xterm')
     }
 
-    tools {
-        jdk 'JDK11'
-    }
-
     stages {
         stage('Construcción del proyecto') {
             steps{
