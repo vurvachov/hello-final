@@ -1,2 +1,2 @@
 # Proyecto final formación Sinensia
-## Se realiza un despliegue de un proyecto java
+## Se realiza un despliegue de un proyecto Java
