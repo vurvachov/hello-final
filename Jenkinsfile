@@ -52,6 +52,23 @@ pipeline {
             }
         }
 
+        /*stage('Lanzando Pitest'){
+            steps{
+                withGradle{
+                    sh './gradlew pitest'
+                }
+                
+            }
+            post{
+                always{
+                    recordIssues(
+                        enabledForFailure: true, 
+                        tool: pit(pattern: '/pitest//*.xml') // Acoerdarse volver a poner ** antes de /pitest y despues de /pitest/
+                    )
+                }
+            }
+        }*/
+
         stage('Construcción del proyecto') {
             steps{
                 echo 'Construyendo...'
@@ -59,14 +76,30 @@ pipeline {
             }    
         }
 
-        /*stage('Guardar Imagn GitLab'){
+        stage('Seguridad') {
+            steps{
+                echo 'Comprobando seguridad...'
+                sh 'trivy image --format=json --output=trivy-image.json hello-final:latest'
+            }
+            post{
+                always{
+                    recordIssues(
+                            tool: trivy(pattern: 'trivy-image.json'),
+                            enabledForFailure: true,
+                            aggregatingResults: true
+                    )
+                }
+            } #P
+        }
+
+        stage('Guardar Imagn GitLab'){
             steps{
                 script{
                     withDockerRegistry([url:'http://10.250.11.3:5050',credentialsId:'deployToken']) {
-                        sh "docker tag hello-final:latest 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
-                        sh "docker push 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
+                        sh "docker tag hello-final:latest 10.250.11.3:5050/vurvachov/hello-final/hello-final:1.0.${env.BUILD_NUMBER}"
+                        sh "docker push 10.250.11.3:5050/vurvachov/hello-final/hello-final:1.0.${env.BUILD_NUMBER}"
                         
-                        sh "docker image rm -f 10.250.11.3:5050/vurvachov/hello-final/hello-final:${env.BUILD_NUMBER}"
+                        sh "docker image rm -f 10.250.11.3:5050/vurvachov/hello-final/hello-final:1.0.${env.BUILD_NUMBER}"
                         sh "docker image rm -f hello-final:latest"
                     } 
                 }
@@ -75,17 +108,12 @@ pipeline {
                                                                     
         }
 
-        stage('Pruebas del proyecto') {
+        stage('Despliege') {
             steps{
-                echo 'Probando....'
-            }
+                sshagent(credentials: ['appKey']) {
+                    sh "ssh -o StrictHostKeyChecking=no app@10.250.11.3 'cd hello-final && docker-compose pull && docker-compose up -d'"
+                }
+            }  
         }
-
-        stage('Despliegue del proyecto') {
-            steps{
-                echo 'Desplegando...'
-                sh 'docker-compose up -d'               
-            }    
-        }*/
     }
 }
