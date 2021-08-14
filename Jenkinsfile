@@ -12,13 +12,6 @@ pipeline {
 
     stages {
 
-        stage('Construcción del proyecto') {
-            steps{
-                echo 'Construyendo...'
-                sh 'docker-compose build'               
-            }    
-        }
-
         stage('Pruebas') {
             steps {
                 
@@ -34,6 +27,36 @@ pipeline {
                     jacoco execPattern:'**/jacoco/*.exec'
                 }                
             }
+        }
+
+        stage('Analysis QA'){
+            steps{
+
+                echo 'Realizando Validacion...'
+
+                withGradle{
+                    sh './gradlew check'
+                }
+            }
+
+            post{
+                always{
+                    recordIssues(
+                        tools: [
+                            pmdParser(pattern: '**/pmd/*.xml'),
+                            spotBugs(useRankAsPriority: true, pattern: '**/spotbugs/*.xml')
+                        ],
+                        enabledForFailure: true
+                    )
+                }
+            }
+        }
+
+        stage('Construcción del proyecto') {
+            steps{
+                echo 'Construyendo...'
+                sh 'docker-compose build'               
+            }    
         }
 
         /*stage('Guardar Imagn GitLab'){
