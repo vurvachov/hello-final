@@ -36,7 +36,7 @@ pipeline {
 
         stage('Pruebas del proyecto') {
             steps{
-                echo 'Probando....'
+                echo 'Probando...'
             }
         }
 
