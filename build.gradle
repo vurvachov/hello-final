@@ -2,6 +2,10 @@ plugins {
 	id 'org.springframework.boot' version '2.5.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
+	id 'pmd'
+	id "com.github.spotbugs" version "4.7.2"
+	id 'info.solidsoft.pitest' version '1.5.1'
 }
 
 group = 'com.viewnext'
@@ -19,4 +23,22 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport{
+	dependsOn test
+	reports {
+		xml.required = true
+	}
+
+}
+
+spotbugs{
+	ignoreFailures = true
+}
+
+pitest {
+	junit5PluginVersion = '0.12'
+	outputFormats = ['XML', 'HTML']
 }

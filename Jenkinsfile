@@ -5,9 +5,27 @@ pipeline {
     options {
         ansiColor('xterm')
     }
-    
+
     stages {
-        stage('Construcción del proyecto') {
+
+        stage('Pruebas') {
+            steps {
+                
+                echo 'Realizando Pruebas...'
+                
+                withGradle{
+                     sh './gradlew clean test'        
+                }             
+            }
+            post{
+                always{
+                    junit '**/test/TEST-com.viewnext.hellofinal.HelloFinalApplicationTests.xml'
+                    jacoco execPattern:'**/jacoco/*.exec'
+                }                
+            }
+        }
+
+        /*stage('Construcción del proyecto') {
             steps{
                 echo 'Construyendo...'
                 sh 'docker-compose build'               
@@ -41,6 +59,6 @@ pipeline {
                 echo 'Desplegando...'
                 sh 'docker-compose up -d'               
             }    
-        }
+        }*/
     }
 }
