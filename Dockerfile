@@ -1,4 +1,4 @@
-FROM gradle:7.1.1-jdk11 AS base
+FROM gradle:7.1.1-jdk16 AS base
 WORKDIR /opt/hello-final
 COPY ./ ./
 RUN ./gradlew assemble
