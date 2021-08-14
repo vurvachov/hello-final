@@ -8,6 +8,13 @@ pipeline {
 
     stages {
 
+        stage('Construcción del proyecto') {
+            steps{
+                echo 'Construyendo...'
+                sh 'docker-compose build'               
+            }    
+        }
+
         stage('Pruebas') {
             steps {
                 
@@ -25,14 +32,7 @@ pipeline {
             }
         }
 
-        /*stage('Construcción del proyecto') {
-            steps{
-                echo 'Construyendo...'
-                sh 'docker-compose build'               
-            }    
-        }
-
-        stage('Guardar Imagn GitLab'){
+        /*stage('Guardar Imagn GitLab'){
             steps{
                 script{
                     withDockerRegistry([url:'http://10.250.11.3:5050',credentialsId:'deployToken']) {
